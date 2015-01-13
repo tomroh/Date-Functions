@@ -5,38 +5,14 @@ nweekdays <- Vectorize(function(a, b) ifelse(!is.na(a) & !is.na(b),sum(!wday(seq
 nweekends <- Vectorize(function(a, b) ifelse(!is.na(a) & !is.na(b),sum(wday(seq(a, b, 'days')) %in% c(1, 7)),NA))
 
 
-nweekdays <- function(startdate,enddate,weekdayx)
-{
-  startwday <- as.numeric(weekdays(startdate))
-  endwday <- as.numeric(weekdays(enddate))
-  datediff <- (enddate-startdate)+1
-  nweekdays <- floor(datediff/7)
-  if (weekdayx >= startwday | weekdayx <= endwday) {
-    nweekdays <- nweekdays + 1
-  }
-  nweekdays
+#calculate number of weekdays between dates
+nweekdays <- function(startdate,enddate,weekdayx) {
+    require(lubridate)
+    dates <- startdate + seq(0,enddate-startdate)
+    sum(wday(dates) == weekdayx)
 }
-
 
 #calculate all counts of all weekdays in a week between dates
-allnweekdays <- function(startdate,enddate)
-{
-  startwday <- as.numeric(weekdays(startdate))
-  endwday <- as.numeric(weekdays(enddate))
-  datediff <- (enddate-startdate)+1
-  WDs <- floor(datediff/7)
-  WDCount <- c()
-  for (weekdayx in 1:7)
-  {
-    if (weekdayx >= startwday | weekdayx <= endwday) {
-      j <- WDs + 1
-    }
-    else {
-      j <- WDs
-    }
-    WDCount <- c(WDCount,j)
-  }
-  WDCount
-}
+sapply(1:7,nweekdays,startdate = as.Date('2012-07-01'),
+       enddate = as.Date('2014-06-30'))
 
-allnweekdays(arr[1,1],arr[nrow(arr),1])
